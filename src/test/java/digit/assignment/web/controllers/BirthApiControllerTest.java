@@ -83,6 +83,8 @@ public class BirthApiControllerTest {
 
 
     @Test
+    @DisplayName("should return birth registration response for create")
+
     public void birthRegistrationV1CreatePostSuccess() throws Exception {
         mockMvc.perform(post("/birth/registration/v1/_create").contentType(MediaType
                         .APPLICATION_JSON_UTF8))
@@ -90,6 +92,8 @@ public class BirthApiControllerTest {
     }
 
     @Test
+    @DisplayName("should return birth registration response for create")
+
     public void birthRegistrationV1CreatePostFailure() throws Exception {
         mockMvc.perform(post("/birth/registration/v1/_create").contentType(MediaType
                         .APPLICATION_JSON_UTF8))

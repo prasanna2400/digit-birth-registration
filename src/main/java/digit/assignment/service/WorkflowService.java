@@ -7,17 +7,18 @@ import digit.assignment.repository.ServiceRequestRepository;
 import digit.assignment.web.models.BirthRegistrationApplication;
 import digit.assignment.web.models.BirthRegistrationRequest;
 import digit.assignment.web.models.Workflow;
-import digit.models.coremodels.*;
+import digit.models.coremodels.ProcessInstance;
+import digit.models.coremodels.ProcessInstanceRequest;
+import digit.models.coremodels.ProcessInstanceResponse;
+import digit.models.coremodels.State;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.User;
-import org.egov.tracer.model.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -68,7 +69,7 @@ public class WorkflowService {
             List<User> users = new ArrayList<>();
 
             workflow.getAssignees().forEach(uuid -> {
-               User user = new User();
+                User user = new User();
                 user.setUuid(uuid);
                 users.add(user);
             });
@@ -80,73 +81,4 @@ public class WorkflowService {
 
     }
 
-    public ProcessInstance getCurrentWorkflow(RequestInfo requestInfo, String tenantId, String businessId) {
-
-        RequestInfoWrapper requestInfoWrapper = RequestInfoWrapper.builder().requestInfo(requestInfo).build();
-
-        StringBuilder url = getSearchURLWithParams(tenantId, businessId);
-
-        Object res = repository.fetchResult(url, requestInfoWrapper);
-        ProcessInstanceResponse response = null;
-
-        try {
-            response = mapper.convertValue(res, ProcessInstanceResponse.class);
-        } catch (Exception e) {
-            throw new CustomException("PARSING_ERROR", "Failed to parse workflow search response");
-        }
-
-        if (response != null && !CollectionUtils.isEmpty(response.getProcessInstances()) && response.getProcessInstances().get(0) != null)
-            return response.getProcessInstances().get(0);
-
-        return null;
-    }
-
-    private BusinessService getBusinessService(BirthRegistrationApplication application, RequestInfo requestInfo) {
-        String tenantId = application.getTenantId();
-        StringBuilder url = getSearchURLWithParams(tenantId, "BTR");
-        RequestInfoWrapper requestInfoWrapper = RequestInfoWrapper.builder().requestInfo(requestInfo).build();
-        Object result = repository.fetchResult(url, requestInfoWrapper);
-        BusinessServiceResponse response = null;
-        try {
-            response = mapper.convertValue(result, BusinessServiceResponse.class);
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("PARSING ERROR", "Failed to parse response of workflow business service search");
-        }
-
-        if (CollectionUtils.isEmpty(response.getBusinessServices()))
-            throw new CustomException("BUSINESSSERVICE_NOT_FOUND", "The businessService " + "BTR" + " is not found");
-
-        return response.getBusinessServices().get(0);
-    }
-
-    private StringBuilder getSearchURLWithParams(String tenantId, String businessService) {
-
-        StringBuilder url = new StringBuilder(config.getWfHost());
-        url.append(config.getWfBusinessServiceSearchPath());
-        url.append("?tenantId=");
-        url.append(tenantId);
-        url.append("&businessServices=");
-        url.append(businessService);
-        return url;
-    }
-
-    public ProcessInstanceRequest getProcessInstanceForBirthRegistrationPayment(BirthRegistrationRequest updateRequest) {
-
-        BirthRegistrationApplication application = updateRequest.getBirthRegistrationApplications().get(0);
-
-        ProcessInstance process = ProcessInstance.builder()
-                .businessService("BTR")
-                .businessId(application.getApplicationNumber())
-                .comment("Payment for birth registration processed")
-                .moduleName("birth-services")
-                .tenantId(application.getTenantId())
-                .action("PAY")
-                .build();
-
-        return ProcessInstanceRequest.builder()
-                .requestInfo(updateRequest.getRequestInfo())
-                .processInstances(Arrays.asList(process))
-                .build();
-
-    }
 }

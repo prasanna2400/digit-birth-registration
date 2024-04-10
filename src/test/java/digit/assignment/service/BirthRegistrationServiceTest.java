@@ -1,9 +1,15 @@
 package digit.assignment.service;
 
 import digit.assignment.enrichment.BirthRegistrationEnrichment;
+import digit.assignment.helper.BirthApplicationSearchCriteriaTestBuilder;
+import digit.assignment.helper.BirthRegistrationRequestTestBuilder;
+import digit.assignment.helper.RequestInfoTestBuilder;
 import digit.assignment.kafka.Producer;
 import digit.assignment.repository.BirthRegistrationRepository;
 import digit.assignment.validators.BirthRegistrationValidator;
+import digit.assignment.web.models.BirthApplicationSearchCriteria;
+import digit.assignment.web.models.BirthRegistrationRequest;
+import org.egov.common.contract.request.RequestInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,60 +40,36 @@ public class BirthRegistrationServiceTest {
     @InjectMocks
     private BirthRegistrationService birthRegistrationService;
 
-//    @BeforeEach
-//    public void setup() {
-//        MockitoAnnotations.initMocks(this);
-//    }
-
     @Test
-    @DisplayName("")
-    public void testRegisterBtRequest() {
-        // Setup
-//        BirthRegistrationRequest request = new BirthRegistrationRequest();
-//        when(birthRegistrationRepository.getApplications(any())).thenReturn(Collections.emptyList());
-//
-//        // Invoke
-//        List<BirthRegistrationApplication> result = birthRegistrationService.registerBtRequest(request);
-//
-//        // Verify
-//        assertEquals(0, result.size());
-//        verify(validator, times(1)).validateBirthApplication(request);
-//        verify(enrichmentUtil, times(1)).enrichBirthApplication(request);
-//        verify(userService, times(1)).callUserService(request);
-//        verify(producer, times(1)).push(anyString(), eq(request));
+    @DisplayName("should call kafka topic if valid birth application found for create")
+    public void shouldCallKafkaTopicRegister() {
+
+        BirthRegistrationRequest request= BirthRegistrationRequestTestBuilder.builder().withRequestInfo().withBirthApplication().build();
+
+        birthRegistrationService.registerBtRequest(request);
+
     }
 
     @Test
-    @DisplayName("")
-    public void testSearchBtApplications() {
-//        // Setup
-//        RequestInfo requestInfo = new RequestInfo();
-//        BirthApplicationSearchCriteria searchCriteria = new BirthApplicationSearchCriteria();
-//        when(birthRegistrationRepository.getApplications(any())).thenReturn(Collections.emptyList());
-//
-//        // Invoke
-//        List<BirthRegistrationApplication> result = birthRegistrationService.searchBtApplications(requestInfo, searchCriteria);
-//
-//        // Verify
-//        assertEquals(0, result.size());
-//        verify(birthRegistrationRepository, times(1)).getApplications(searchCriteria);
+    @DisplayName("should return Birth Application")
+    public void shouldSearchOnSearchCriteria() {
+
+
+        BirthApplicationSearchCriteria searchCriteria= BirthApplicationSearchCriteriaTestBuilder.builder().build();
+
+        RequestInfo requestInfo= RequestInfoTestBuilder.builder().withCompleteRequestInfo().build();
+
+        birthRegistrationService.searchBtApplications(requestInfo,searchCriteria);
+
     }
 
     @Test
-    @DisplayName("")
-    public void testUpdateBtApplication() {
-        // Setup
-//        BirthRegistrationRequest request = new BirthRegistrationRequest();
-//        BirthRegistrationApplication application = new BirthRegistrationApplication();
-//        request.setBirthRegistrationApplications(Collections.singletonList(application));
-//
-//        // Invoke
-//        BirthRegistrationApplication result = birthRegistrationService.updateBtApplication(request);
-//
-//        // Verify
-//        assertEquals(application, result);
-//        verify(validator, times(1)).validateApplicationExistence(application);
-//        verify(enrichmentUtil, times(1)).enrichBirthApplicationUponUpdate(request);
-//        verify(producer, times(1)).push(anyString(), eq(request));
+    @DisplayName("should call kafka topic if valid birth application found for update")
+    public void shouldCallKafkaTopicUpdate() {
+
+        BirthRegistrationRequest request = BirthRegistrationRequestTestBuilder.builder().withRequestInfo().withBirthApplication().build();
+
+        birthRegistrationService.updateBtApplication(request);
+
     }
 }

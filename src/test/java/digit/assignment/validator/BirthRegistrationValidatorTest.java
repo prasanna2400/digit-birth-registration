@@ -26,9 +26,9 @@ public class BirthRegistrationValidatorTest {
 
 
     @Test
-    @DisplayName("")
+    @DisplayName("should validate birth application")
     public void validateBirthApplication() {
-//dont pass tenant id and catch the exception
+        //dont pass tenant id and catch the exception
         BirthRegistrationRequest request = BirthRegistrationRequestTestBuilder.builder().withRequestInfo().withBirthApplication().build();
         validator.validateBirthApplication(request);
 
@@ -36,7 +36,7 @@ public class BirthRegistrationValidatorTest {
     }
 
     @Test
-    @DisplayName("")
+    @DisplayName("should validate application existence")
     public void validateApplicationExistence() {
 
 

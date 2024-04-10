@@ -33,7 +33,7 @@ public class IdgenUtilTest {
 
 
     @Test
-    @DisplayName("")
+    @DisplayName("should provide list of ids")
     void shouldProvideListOfIds(){
 
 

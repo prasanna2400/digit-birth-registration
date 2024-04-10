@@ -9,7 +9,6 @@ import digit.assignment.util.IdgenUtil;
 import digit.assignment.util.UserUtil;
 import digit.assignment.web.models.BirthRegistrationApplication;
 import digit.assignment.web.models.BirthRegistrationRequest;
-import digit.assignment.web.models.UserDetailResponse;
 import org.egov.common.contract.request.RequestInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

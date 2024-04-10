@@ -5,7 +5,6 @@ import digit.assignment.web.models.BirthApplicationAddress;
 
 public class BirthApplicationAddressTestBuilder {
 
-
     private BirthApplicationAddress.BirthApplicationAddressBuilder builder;
 
 
