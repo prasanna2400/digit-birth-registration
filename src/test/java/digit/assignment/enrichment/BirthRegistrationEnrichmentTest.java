@@ -21,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.lenient;
@@ -48,7 +49,6 @@ public class BirthRegistrationEnrichmentTest {
         idList.add("ID_TEST_001");
         lenient().when(idgenUtil.getIdList(any(RequestInfo.class), any(String.class), any(), any(), anyInt())).thenReturn(idList);
 
-
     }
 
 
@@ -58,6 +58,15 @@ public class BirthRegistrationEnrichmentTest {
         BirthRegistrationRequest birthRegistrationRequest = BirthRegistrationRequestTestBuilder.builder().withRequestInfo().withBirthApplication().build();
 
         birthRegistrationEnrichment.enrichBirthApplication(birthRegistrationRequest);
+
+        assertNotNull(birthRegistrationRequest);
+        BirthRegistrationApplication application = birthRegistrationRequest.getBirthRegistrationApplications().get(0);
+
+        assertNotNull(application);
+        assertNotNull(application.getId());
+        assertNotNull(application.getAddress().getId());
+        assertNotNull(application.getAddress().getApplicantAddress().getId());
+        assertEquals("ID_TEST_001", application.getApplicationNumber());
 
 
     }
@@ -69,30 +78,44 @@ public class BirthRegistrationEnrichmentTest {
 
         birthRegistrationEnrichment.enrichBirthApplicationUponUpdate(birthRegistrationRequest);
 
-
+        assertNotNull(birthRegistrationRequest);
+        BirthRegistrationApplication application = birthRegistrationRequest.getBirthRegistrationApplications().get(0);
+        assertNotNull(application.getAuditDetails());
+        assertEquals(application.getAuditDetails().getLastModifiedBy(), "some-uuid");
+        assertNotEquals(application.getAuditDetails().getLastModifiedTime(), 1L);
     }
 
 
     @Test
     @DisplayName("should enrich father application on search")
     void shouldEnrichFatherApplicationOnSearch() {
-        BirthRegistrationApplication birthRegistrationRequest = BirthRegistrationApplicationTestBuilder.builder().withApplication().withFatherApplication().build();
+        BirthRegistrationApplication birthRegistrationApplication = BirthRegistrationApplicationTestBuilder.builder().withApplication().withFatherApplication().build();
 
         lenient().when(userUtil.getStateLevelTenant(any())).thenReturn("default");
         lenient().when(userService.searchUser(any(), any(), any())).thenReturn(UserDetailResponseTestBuilder.builder().withUserDetailResponse().build());
-        birthRegistrationEnrichment.enrichFatherApplicantOnSearch(birthRegistrationRequest);
+        birthRegistrationEnrichment.enrichFatherApplicantOnSearch(birthRegistrationApplication);
+
+        assertNotNull(birthRegistrationApplication);
+        assertNotNull(birthRegistrationApplication.getFather());
+        assertEquals(birthRegistrationApplication.getFather().getUuid(), "some-uuid");
+        assertEquals(birthRegistrationApplication.getFather().getName(), "some-name");
+
 
     }
 
     @Test
-    @DisplayName("should enrich update birth registration application")
+    @DisplayName("should enrich mother application on search")
     void shouldEnrichMotherApplicationOnSearch() {
-        BirthRegistrationApplication birthRegistrationRequest = BirthRegistrationApplicationTestBuilder.builder().withApplication().withMotherApplication().build();
-
+        BirthRegistrationApplication birthRegistrationApplication = BirthRegistrationApplicationTestBuilder.builder().withApplication().withMotherApplication().build();
 
         lenient().when(userUtil.getStateLevelTenant(any())).thenReturn("default");
         lenient().when(userService.searchUser(any(), any(), any())).thenReturn(UserDetailResponseTestBuilder.builder().withUserDetailResponse().build());
-        birthRegistrationEnrichment.enrichMotherApplicantOnSearch(birthRegistrationRequest);
+        birthRegistrationEnrichment.enrichMotherApplicantOnSearch(birthRegistrationApplication);
+
+        assertNotNull(birthRegistrationApplication);
+        assertNotNull(birthRegistrationApplication.getMother());
+        assertEquals(birthRegistrationApplication.getMother().getUuid(), "some-uuid");
+        assertEquals(birthRegistrationApplication.getMother().getName(), "some-name");
 
     }
 }
