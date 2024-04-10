@@ -16,9 +16,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.any;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 
@@ -37,7 +35,6 @@ public class BirthRegistrationRepositoryTest {
 
     @InjectMocks
     private BirthRegistrationRepository repository;
-
 
 
     @Test

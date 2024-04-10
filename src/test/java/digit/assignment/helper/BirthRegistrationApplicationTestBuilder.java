@@ -26,7 +26,12 @@ public class BirthRegistrationApplicationTestBuilder {
 
 
     public BirthRegistrationApplicationTestBuilder withApplication() {
-        this.builder.id("someId").tenantId("tenantID").auditDetails(AuditDetails.builder().createdBy("creator").lastModifiedBy("creator").lastModifiedTime(1L).createdTime(1L).build()).address(BirthApplicationAddressTestBuilder.builder().withBirthAddress().build()).build();
+        this.builder.id("someId").tenantId("tenantID").applicationNumber("application-number").auditDetails(AuditDetails.builder().createdBy("creator").lastModifiedBy("creator").lastModifiedTime(1L).createdTime(1L).build()).address(BirthApplicationAddressTestBuilder.builder().withBirthAddress().build()).build();
+        return this;
+    }
+
+    public BirthRegistrationApplicationTestBuilder withTenantId(String tenantId) {
+        this.builder.tenantId(tenantId).build();
         return this;
     }
 
