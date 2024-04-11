@@ -2,6 +2,7 @@ package digit.assignment.helper;
 
 import digit.assignment.web.models.BirthRegistrationApplication;
 import digit.assignment.web.models.User;
+import digit.assignment.web.models.Workflow;
 import digit.models.coremodels.AuditDetails;
 
 public class BirthRegistrationApplicationTestBuilder {
@@ -42,7 +43,12 @@ public class BirthRegistrationApplicationTestBuilder {
     }
 
     public BirthRegistrationApplicationTestBuilder withMotherApplication() {
-        this.builder.father(User.builder().uuid("uuid").name("mother").build());
+        this.builder.mother(User.builder().uuid("uuid").name("mother").build());
+        return this;
+    }
+
+    public BirthRegistrationApplicationTestBuilder withWorkFlow() {
+        this.builder.workflow(Workflow.builder().status("status").action("action").build()).build();
         return this;
     }
 }

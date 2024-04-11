@@ -13,6 +13,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.egov.common.contract.response.ResponseInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -58,9 +59,8 @@ public class BirthApiController {
             BirthRegistrationResponse response = BirthRegistrationResponse.builder().birthRegistrationApplications(applications).responseInfo(responseInfo).build();
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
-//            return handleException(e);
+            return handledException(e);
         }
-        return null;
     }
 
 
@@ -72,9 +72,8 @@ public class BirthApiController {
             BirthRegistrationResponse response = BirthRegistrationResponse.builder().birthRegistrationApplications(applications).responseInfo(responseInfo).build();
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
-//            return handleException(e);
+            return handledException(e);
         }
-        return null;
     }
 
 
@@ -86,9 +85,29 @@ public class BirthApiController {
             BirthRegistrationResponse response = BirthRegistrationResponse.builder().birthRegistrationApplications(Collections.singletonList(application)).responseInfo(responseInfo).build();
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
-//            return handleException(e);
+            return handledException(e);
         }
-        return null;
+    }
+
+
+    private ResponseEntity<BirthRegistrationResponse> handledException(Exception e) {
+        // Log the error
+        Logger logger = LoggerFactory.getLogger(BirthApiController.class);
+        logger.error("Error occurred while processing request", e);
+
+        // Create error response
+        ResponseInfo errorResponseInfo = responseInfoFactory.createResponseInfoFromRequestInfo(null, false);
+        BirthRegistrationResponse errorResponse = BirthRegistrationResponse.builder().responseInfo(errorResponseInfo).build();
+
+
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        if (e instanceof IllegalArgumentException) {
+
+            status = HttpStatus.BAD_REQUEST;
+        }
+
+        // Return error response with appropriate status code
+        return new ResponseEntity<>(errorResponse, status);
     }
 
 }
