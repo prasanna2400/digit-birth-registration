@@ -3,6 +3,7 @@ package digit.assignment.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import digit.assignment.config.Configuration;
 import digit.assignment.repository.ServiceRequestRepository;
+import digit.assignment.web.models.Workflow;
 import digit.models.coremodels.*;
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.common.contract.request.User;
@@ -115,13 +116,13 @@ public class WorkflowUtil {
         processInstance.setModuleName(wfModuleName);
         processInstance.setTenantId(tenantId);
         processInstance.setBusinessService(getBusinessService(requestInfo, tenantId, businessServiceCode).getBusinessService());
-        processInstance.setDocuments(workflow.getVerificationDocuments());
-        processInstance.setComment(workflow.getComments());
+        processInstance.setDocuments(workflow.getDocuments());
+        processInstance.setComment(workflow.getComment());
 
-        if (!CollectionUtils.isEmpty(workflow.getAssignes())) {
+        if (!CollectionUtils.isEmpty(workflow.getAssignees())) {
             List<User> users = new ArrayList<>();
 
-            workflow.getAssignes().forEach(uuid -> {
+            workflow.getAssignees().forEach(uuid -> {
                 User user = new User();
                 user.setUuid(uuid);
                 users.add(user);
@@ -152,9 +153,9 @@ public class WorkflowUtil {
 
             Workflow workflow = Workflow.builder()
                     .action(processInstance.getAction())
-                    .assignes(userIds)
-                    .comments(processInstance.getComment())
-                    .verificationDocuments(processInstance.getDocuments())
+                    .assignees(userIds)
+                    .comment(processInstance.getComment())
+                    .documents(processInstance.getDocuments())
                     .build();
 
             businessIdToWorkflow.put(processInstance.getBusinessId(), workflow);

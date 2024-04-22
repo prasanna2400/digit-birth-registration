@@ -19,4 +19,9 @@ public class BirthApplicationSearchCriteriaTestBuilder {
     public BirthApplicationSearchCriteria build() {
         return this.builder.build();
     }
+
+    public BirthApplicationSearchCriteriaTestBuilder withSearchCriteria() {
+        this.builder.tenantId("tenantId").applicationNumber("application-number").build();
+        return this;
+    }
 }
