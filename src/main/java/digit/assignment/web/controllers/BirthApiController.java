@@ -38,17 +38,18 @@ public class BirthApiController {
 
     private final HttpServletRequest request;
 
-    @Autowired
-    private BirthRegistrationService birthRegistrationService;
-
-    @Autowired
-    private ResponseInfoFactory responseInfoFactory;
+    private final BirthRegistrationService birthRegistrationService;
 
 
+    private final ResponseInfoFactory responseInfoFactory;
+
+
     @Autowired
-    public BirthApiController(ObjectMapper objectMapper, HttpServletRequest request) {
+    public BirthApiController(ObjectMapper objectMapper, HttpServletRequest request,BirthRegistrationService birthRegistrationService,ResponseInfoFactory responseInfoFactory) {
         this.objectMapper = objectMapper;
         this.request = request;
+        this.birthRegistrationService=birthRegistrationService;
+        this.responseInfoFactory=responseInfoFactory;
     }
 
     @RequestMapping(value = "/registration/v1/_create", method = RequestMethod.POST)

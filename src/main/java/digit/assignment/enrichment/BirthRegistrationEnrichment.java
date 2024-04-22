@@ -81,7 +81,7 @@ public class BirthRegistrationEnrichment {
     }
 
     public void enrichMotherApplicantOnSearch(BirthRegistrationApplication application) {
-        UserDetailResponse motherUserResponse = userService.searchUser(userUtils.getStateLevelTenant(application.getTenantId()), application.getFather().getUuid(), null);
+        UserDetailResponse motherUserResponse = userService.searchUser(userUtils.getStateLevelTenant(application.getTenantId()), application.getMother().getUuid(), null);
         User motherUser = motherUserResponse.getUser().get(0);
         log.info(motherUser.toString());
         User motherApplicant = User.builder()
